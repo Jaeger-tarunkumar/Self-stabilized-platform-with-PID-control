@@ -27,6 +27,12 @@ const float deadband = 1.0;
 float prevServoY = 90;
 float prevServoX = 90;
 
+float preverrorY = 0;
+float preverrorX = 0;
+
+float t2 = 0;
+float t1 = 0;
+
 void setup() {
   Serial.begin(115200);
   Wire.begin();
@@ -57,18 +63,26 @@ void loop() {
   unsigned long currentTime = millis();
   if (currentTime - lastUpdateTime >= updateInterval) {
     lastUpdateTime = currentTime;
-
+    float deltaTime = 0;
+    
     // === OPTION 1: DIRECT MAPPING ===
-    //float servoAngleY = baseY + angleY_filtered;
-    //float servoAngleX = baseX - angleX_filtered;
+    //float servoAngleY = 80 + angleY_filtered;
+    //loat servoAngleX = 88 + angleX_filtered;
 
     // === OPTION 2: PROPORTIONAL CONTROL (comment OPTION 1 above if using this) ===
-    // float Kp = 1.5;
-    // float errorY = 0 - angleY_filtered;  // Target is level
-    // float errorX = 0 - angleX_filtered;
-    // float servoAngleY = baseY - (Kp * errorY );
-    // float servoAngleX = baseX - (Kp * errorX );
-
+    t1 = millis();
+    deltaTime = t2 - t1;
+     float Kp = 1.05;
+     float Kd = 0.07;
+     float errorY = 0 - angleY_filtered;  // Target is level
+     float errorX = 0 - angleX_filtered;
+     float dtY = (errorY - preverrorY)/deltaTime;
+     float dtX = (errorY - preverrorY)/deltaTime;
+     float correctionY = Kp*errorY + Kd*dtY;
+     float correctionX = Kp*errorX + Kd*dtX;
+     float servoAngleY = baseY - (correctionY );
+     float servoAngleX = baseX - (correctionX );
+     
     // Clamp angles
     servoAngleY = constrain(servoAngleY, 0, 180);
     servoAngleX = constrain(servoAngleX, 0, 180);
@@ -93,5 +107,9 @@ void loop() {
     Serial.print(angleX_filtered);
     Serial.print("  -> Servo X: ");
     Serial.println(servoAngleX);
+    preverrorY = errorY;
+    preverrorX = errorX;
+    delay(15);
+    t2 = t1;
   }
 }
