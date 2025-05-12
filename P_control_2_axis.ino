@@ -10,6 +10,9 @@ Servo servoX;  // Top axis
 float angleY_filtered = 0;
 float angleX_filtered = 0;
 
+float baseY = 79;
+float baseX = 88;
+
 // Filtering parameters
 const float alpha = 0.05;  // Low-pass filter smoothing factor
 
@@ -36,8 +39,8 @@ void setup() {
   angleY_filtered = 0;
   angleX_filtered = 0;
 
-  servoY.write(90);
-  servoX.write(90);
+  servoY.write(baseY);
+  servoX.write(baseX);
 }
 
 void loop() {
@@ -56,15 +59,15 @@ void loop() {
     lastUpdateTime = currentTime;
 
     // === OPTION 1: DIRECT MAPPING ===
-    float servoAngleY = 90 + angleY_filtered;
-    float servoAngleX = 90 - angleX_filtered;
+    //float servoAngleY = baseY + angleY_filtered;
+    //float servoAngleX = baseX - angleX_filtered;
 
     // === OPTION 2: PROPORTIONAL CONTROL (comment OPTION 1 above if using this) ===
     // float Kp = 1.5;
     // float errorY = 0 - angleY_filtered;  // Target is level
     // float errorX = 0 - angleX_filtered;
-    // float servoAngleY = 90 + (Kp * errorY);
-    // float servoAngleX = 90 + (Kp * errorX);
+    // float servoAngleY = baseY - (Kp * errorY );
+    // float servoAngleX = baseX - (Kp * errorX );
 
     // Clamp angles
     servoAngleY = constrain(servoAngleY, 0, 180);
