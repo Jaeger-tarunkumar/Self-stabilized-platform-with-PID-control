@@ -72,14 +72,16 @@ void loop() {
     // === OPTION 2: PROPORTIONAL CONTROL (comment OPTION 1 above if using this) ===
     t1 = millis();
     deltaTime = t2 - t1;
-     float Kp = 1.05;
-     float Kd = 0.07;
+     float KpY = 1.05;
+     float KdY = 0.05;
+     float KpX = 1.05;
+     float KdX = 0.07;
      float errorY = 0 - angleY_filtered;  // Target is level
      float errorX = 0 - angleX_filtered;
      float dtY = (errorY - preverrorY)/deltaTime;
-     float dtX = (errorY - preverrorY)/deltaTime;
-     float correctionY = Kp*errorY + Kd*dtY;
-     float correctionX = Kp*errorX + Kd*dtX;
+     float dtX = (errorX - preverrorX)/deltaTime;
+     float correctionY = KpY*errorY + KdY*dtY;
+     float correctionX = KpX*errorX + KdX*dtX;
      float servoAngleY = baseY - (correctionY );
      float servoAngleX = baseX - (correctionX );
      
